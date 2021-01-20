@@ -1,0 +1,11 @@
+@Override
+    public void render (float delta) {
+        deltas += delta;
+        if (deltas <= 0.033f) {
+            return;
+        }
+        deltas = 0;
+        //Input handling here
+        //GameLogic updates here
+        //Rendering code here
+}
