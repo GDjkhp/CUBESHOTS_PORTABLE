@@ -5,12 +5,15 @@ import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
 import com.mygdx.karakters.cubeshots.MyGdxGame;
 
+import static com.mygdx.karakters.cubeshots.misc.Constant.GAME_HEIGHT;
+import static com.mygdx.karakters.cubeshots.misc.Constant.GAME_WIDTH;
+
 public class HtmlLauncher extends GwtApplication {
 
         // USE THIS CODE FOR A FIXED SIZE APPLICATION
         @Override
         public GwtApplicationConfiguration getConfig () {
-                return new GwtApplicationConfiguration(480, 320);
+                return new GwtApplicationConfiguration(GAME_WIDTH, GAME_HEIGHT);
         }
         // END CODE FOR FIXED SIZE APPLICATION
 

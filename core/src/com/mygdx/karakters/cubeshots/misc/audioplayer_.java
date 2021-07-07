@@ -9,6 +9,7 @@ import java.util.Map;
 
 public class audioplayer_{
     public static String currentMusic = "";
+    // TODO: yow implement slick2d, serious bug happened
     public static Map<String, Sound> soundMap = new HashMap<String, Sound>();
     public static Map<String, Music> musicMap = new HashMap<String, Music>();
     public static String soundPath = "resources_/sounds_/";

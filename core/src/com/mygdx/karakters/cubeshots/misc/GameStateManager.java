@@ -57,7 +57,7 @@ public abstract class GameStateManager extends ScreenAdapter implements Constant
     public int total_steps = 1;
     public int fourbarsteps = 1;
 
-    public boolean metronomeSounds = false;
+    public boolean metronomeSounds = true;
 
     // game loop attempt 3
     public float time = 0;
@@ -118,10 +118,22 @@ public abstract class GameStateManager extends ScreenAdapter implements Constant
         texture = new Texture(pixmap);
         sprite = new Sprite(texture);
     }
+
     public void resize(int width, int height){
         vp.update(width, height);
         cam.position.set(GAME_WIDTH/2, GAME_HEIGHT/2, 0);
     }
 
     protected abstract void update();
+
+    public void metronomeCode() {
+        // metronome codes
+        if (fourbarticks == 4) fourbarticks = 0;
+        fourbarticks++;
+        total_beats++;
+        if (fourbarticks == 1) {
+            total_bars++;
+            if (game.music && metronomeSounds) audioplayer_.getSound("first_tick").play();
+        } else if (game.music && metronomeSounds) audioplayer_.getSound("tick").play();
+    }
 }

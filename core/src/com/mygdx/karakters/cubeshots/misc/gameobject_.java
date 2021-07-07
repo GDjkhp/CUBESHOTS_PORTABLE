@@ -21,6 +21,7 @@ public abstract class gameobject_ implements Disposable, Constant {
     protected Pixmap pixmap;
     protected BitmapFont font;
     protected OrthographicCamera font_cam, cam;
+    protected int spawnTimer;
     public abstract void update();
     public abstract void render(SpriteBatch sb);
     public abstract Rectangle getBounds();

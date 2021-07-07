@@ -3,12 +3,16 @@ package com.mygdx.karakters.cubeshots.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.karakters.cubeshots.MyGdxGame;
+import com.mygdx.karakters.cubeshots.entities.basecircle_;
 import com.mygdx.karakters.cubeshots.entities.basicenemy_;
+import com.mygdx.karakters.cubeshots.entities.heart_;
 import com.mygdx.karakters.cubeshots.entities.player_;
 import com.mygdx.karakters.cubeshots.misc.Constant;
 import com.mygdx.karakters.cubeshots.misc.GameStateManager;
 import com.mygdx.karakters.cubeshots.misc.ID;
+import com.mygdx.karakters.cubeshots.misc.audioplayer_;
 
 public class GameScreen extends GameStateManager implements Constant {
     private final String classID = getClass().getName();
@@ -19,22 +23,61 @@ public class GameScreen extends GameStateManager implements Constant {
     public void show() {
         // summon test entities
         handler.addObject(new player_(0, 0, ID.Player, handler, vp, cam, mousePos));
-        handler.addObject(new basicenemy_(0, 0, ID.BasicEnemy, handler));
+        // test sound
+        if (game.music) audioplayer_.getMusic("dead_meme").play();
+
+        bpm = 125;
+//        endBar = 84;
+        // music logic time
+        tpm = (60000/bpm) / 10;
+//        spm = tpm * 4 / 16;
 
         Gdx.app.log(classID, "The game is running");
     }
 
-    public void pause () {
+    public void pause() {
         Gdx.app.log(classID, "The game is paused");
     }
 
-    public void resume () {
+    public void resume() {
         Gdx.app.log(classID, "The game is resumed");
     }
+
+    // vars for gameloop fix
+    public long lastTime = TimeUtils.nanoTime();
+    double amountOfTicks = 100.0;
+    double ns = 1000000000 / amountOfTicks;
+    public double delta = 0;
 
     public void update() {
         // tick stuff here
         handler.update();
+
+        long now = TimeUtils.nanoTime();
+        delta += (now - lastTime) / ns;
+        lastTime = now;
+
+        while (delta >= 1) {
+            delta--;
+            // spawn code
+            scoreKeep++;
+            scoreKeepStep++;
+            if (scoreKeep >= tpm) {
+                if (metronome) metronomeCode();
+                difference = scoreKeep - tpm;
+                scoreKeep = difference;
+                /*handler.addObject(new heart_(r.nextInt(GAME_WIDTH - 10), r.nextInt(GAME_HEIGHT - 10),
+                        ID.HeartFriend, handler, 0, 0));*/
+                handler.addObject(new basecircle_(r.nextInt(GAME_WIDTH - 10), r.nextInt(GAME_HEIGHT - 10),
+                        ID.BaseCircle, handler, 0, 0, 0));
+            }
+            // steps
+            /*if (scoreKeepStep >= spm) {
+                stepsBeta();
+                stepDifference = scoreKeepStep - spm;
+                scoreKeepStep = stepDifference;
+            }*/
+        }
 
         // rotate
         /*sprite.rotate(1f);
@@ -42,7 +85,7 @@ public class GameScreen extends GameStateManager implements Constant {
         */
     }
 
-    public void render(float deltaTime) {
+    public void render(float delta) {
         // tick here
         update();
         // things get rough, the buffer

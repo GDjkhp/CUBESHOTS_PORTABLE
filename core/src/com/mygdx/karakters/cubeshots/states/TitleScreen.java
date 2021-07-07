@@ -29,27 +29,50 @@ public class TitleScreen extends GameStateManager {
         handler.addObject(new player_(0, 0, ID.Player, handler, vp, cam, mousePos));
         handler.addObject(new CURSOR_POINTER(0, 0, ID.CURSOR, vp, cam, mousePos));
         // test sound
-        if (game.music) audioplayer_.getMusic("dead_meme").play();
-        bpm = 125;
-//        endBar = 84;
-        // music logic time
-        tpm = (60000/bpm) / 10;
-//        spm = tpm * 4 / 16;
-    }
-
-    public void update() {
-        handler.update();
-        // spawn code
-        scoreKeep++;
-        // beats
-        if (scoreKeep >= tpm) {
-            if (metronome) metronomeCode();
-            difference = scoreKeep - tpm;
-            scoreKeep = difference;
+        if (game.music) {
+            audioplayer_.getMusic("dead_meme").play();
+            bpm = 125;
+            tpm = (60000/bpm) / 10;
         }
     }
 
-    public void render (float delta) {
+    // vars for gameloop fix
+    public long lastTime = TimeUtils.nanoTime();
+    double amountOfTicks = 100.0;
+    double ns = 1000000000 / amountOfTicks;
+    public double delta = 0;
+
+    public void update() {
+        handler.update();
+
+        long now = TimeUtils.nanoTime();
+        delta += (now - lastTime) / ns;
+        lastTime = now;
+
+        while (delta >= 1) {
+            delta--;
+            // spawn code
+            scoreKeep++;
+            scoreKeepStep++;
+            if (scoreKeep >= tpm) {
+                if (metronome) metronomeCode();
+                difference = scoreKeep - tpm;
+                scoreKeep = difference;
+                /*handler.addObject(new heart_(r.nextInt(GAME_WIDTH - 10), r.nextInt(GAME_HEIGHT - 10),
+                        ID.HeartFriend, handler, 0, 0));*/
+                /*handler.addObject(new basecircle_(r.nextInt(GAME_WIDTH - 10), r.nextInt(GAME_HEIGHT - 10),
+                        ID.BaseCircle, handler, 0, 0, 0));*/
+            }
+            // steps
+            /*if (scoreKeepStep >= spm) {
+                stepsBeta();
+                stepDifference = scoreKeepStep - spm;
+                scoreKeepStep = stepDifference;
+            }*/
+        }
+    }
+
+    public void render(float delta) {
         // fps
         long deltas = TimeUtils.timeSinceMillis(lastTimeCounted);
         lastTimeCounted = TimeUtils.millis();
@@ -59,14 +82,15 @@ public class TitleScreen extends GameStateManager {
             frameRate = Gdx.graphics.getFramesPerSecond();
         }
 
-        // loop this tick
+        // FIXME: loop this tick
         time += Gdx.graphics.getRawDeltaTime();
 //        int updatesThisFrame = 0;
         while (time >= tick /*&& updatesThisFrame < maxUpdatesPerFrame*/) {
-            update();
+//            update(); // lock step
 //            updatesThisFrame++;
             time -= tick;
         }
+        update(); // frame step
 
         // things get rough, the buffer
         Gdx.gl20.glClearColor(Color.DARK_GRAY.r, Color.DARK_GRAY.g, Color.DARK_GRAY.b, Color.DARK_GRAY.a);
@@ -121,16 +145,7 @@ public class TitleScreen extends GameStateManager {
         sb.end();
     }
 
-    public void metronomeCode () {
-        // metronome codes
-        if (fourbarticks == 4) fourbarticks = 0;
-        fourbarticks++;
-        total_beats++;
-        if (fourbarticks == 1) {
-            total_bars++;
-            if (game.music && metronomeSounds) audioplayer_.getSound("first_tick").play();
-        } else if (game.music && metronomeSounds) audioplayer_.getSound("tick").play();
-    }
+
 }
 
 

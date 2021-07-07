@@ -1,0 +1,9 @@
+soundMap.put("null", Gdx.audio.newSound(Gdx.files.internal(soundPath + "null.ogg")));
+            soundMap.put("click_sound", Gdx.audio.newSound(Gdx.files.internal(soundPath + "Gun-Reload-Sound-Effect.ogg")));
+            soundMap.put("tick", Gdx.audio.newSound(Gdx.files.internal(soundPath + "tick.ogg")));
+            soundMap.put("first_tick", Gdx.audio.newSound(Gdx.files.internal(soundPath + "tickstart.ogg")));
+            // default music
+            musicMap.put("null", Gdx.audio.newMusic(Gdx.files.internal(soundPath + "null.ogg")));
+            musicMap.put("music", Gdx.audio.newMusic(Gdx.files.internal(musicPath + "97945.ogg")));
+            musicMap.put("shop_music", Gdx.audio.newMusic(Gdx.files.internal(musicPath + "reminds me of elevators.ogg")));
+
